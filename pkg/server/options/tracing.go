@@ -31,7 +31,6 @@ import (
 	"k8s.io/apiserver/pkg/server"
 	"k8s.io/apiserver/pkg/server/egressselector"
 	"k8s.io/apiserver/pkg/tracing"
-	"k8s.io/component-base/traces"
 	"k8s.io/utils/path"
 )
 
@@ -103,11 +102,6 @@ func (o *TracingOptions) ApplyTo(es *egressselector.EgressSelector, c *server.Co
 			semconv.ServiceNameKey.String(apiserverService),
 			semconv.ServiceInstanceIDKey.String(c.APIServerID),
 		),
-	}
-	tp := traces.NewProvider(context.Background(), sampler, resourceOpts, opts...)
-	c.TracerProvider = &tp
-	if c.LoopbackClientConfig != nil {
-		c.LoopbackClientConfig.Wrap(traces.WrapperFor(c.TracerProvider))
 	}
 	return nil
 }
